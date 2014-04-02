@@ -1,8 +1,8 @@
 (function () {
     "use strict";
-    var game, main_state, x_vel, cursors;
+    var game, main_state, initial_sprite_x_vel, cursors;
 
-    x_vel = -100;
+    initial_sprite_x_vel = -100;
 
     // We start by initializing Phaser
     // Parameters: width of the game, height of the game, how to render the game, the HTML div that will contain the game
@@ -13,7 +13,7 @@
     main_state = {
 
         preload: function () {
-            game.load.image('background', 'assets/greybackground.png');
+            game.load.image('background', 'assets/sunnybackground.png');
             game.load.spritesheet('sadsprite', 'assets/sadsprite.png', 16, 16);
             game.load.image('ground', 'assets/ground.png');
             game.load.spritesheet('bigblueguy', 'assets/bigblueguy.png', 50, 50);
@@ -24,6 +24,7 @@
             cursors = game.input.keyboard.createCursorKeys();
 
             this.background = game.add.sprite(0, 0, 'background');
+            this.background.scale.setTo(1.5, 1.5);
             this.platforms = game.add.group();
             this.platforms.enableBody = true;
             var ground = this.platforms.create(0, game.world.height - 100, 'ground');
@@ -48,7 +49,7 @@
 
             // Start the animation playing right
             this.sad_sprite.animations.play('right');
-            this.sad_sprite.body.velocity.x = x_vel;
+            this.sad_sprite.body.velocity.x = initial_sprite_x_vel;
 
 
             this.player = game.add.sprite(50, game.world.height - 300, 'bigblueguy');
@@ -66,8 +67,14 @@
 
             game.physics.arcade.collide(this.sad_sprite, this.platforms);
             game.physics.arcade.collide(this.player, this.platforms);
-            game.physics.arcade.collide(this.player, this.sad_sprite, function(){
-               console.log("Collision!")
+            game.physics.arcade.collide(this.player, this.sad_sprite, function(player, sadSprite){
+                var isPlayerHurt = player.body.touching.left || player.body.touching.right || player.body.touching.up;
+                if (isPlayerHurt){
+                   console.log("Ouch!")
+               }
+                else {
+                   console.log("Yay!")
+               }
             });
             updateAnimation(this.sad_sprite);
             updatePlayerAnimation(this.player);

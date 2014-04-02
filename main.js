@@ -26,12 +26,12 @@
             this.background = game.add.sprite(0, 0, 'background');
             this.platforms = game.add.group();
             this.platforms.enableBody = true;
-            var ground = this.platforms.create(0, game.world.height - 107, 'ground');
+            var ground = this.platforms.create(0, game.world.height - 100, 'ground');
 
             //  This stops it from falling away when you jump on it
             ground.body.immovable = true;
 
-            this.sad_sprite = game.add.sprite(16, game.world.height - 300, 'sadsprite');
+            this.sad_sprite = game.add.sprite(game.world.width - 100, game.world.height - 300, 'sadsprite');
             this.sad_sprite.scale.setTo(4, 4);
 
             //  We need to enable physics on the player
@@ -40,6 +40,7 @@
             this.sad_sprite.body.collideWorldBounds = true;
             this.sad_sprite.body.bounce.y = 1;
             this.sad_sprite.body.bounce.x = 1;
+            this.sad_sprite.body.setSize(8, 12, -20, -6);
 
             //  Our two animations, walking left and right.
             this.sad_sprite.animations.add('left', [0, 1, 2, 3, 4, 5, 6], 5, true);
@@ -51,12 +52,13 @@
 
 
             this.player = game.add.sprite(50, game.world.height - 300, 'bigblueguy');
+            this.player.scale.setTo(2, 2);
             game.physics.arcade.enable(this.player);
             this.player.body.gravity.y = 600;
             this.player.body.collideWorldBounds = true;
             this.player.animations.add('right', [1,2,3,4], 6, true);
             this.player.animations.add('left', [5,6,7,8], 6, true);
-            this.player.scale.setTo(2, 2);
+
         },
 
         update: function () {
@@ -64,6 +66,9 @@
 
             game.physics.arcade.collide(this.sad_sprite, this.platforms);
             game.physics.arcade.collide(this.player, this.platforms);
+            game.physics.arcade.collide(this.player, this.sad_sprite, function(){
+               console.log("Collision!")
+            });
             updateAnimation(this.sad_sprite);
             updatePlayerAnimation(this.player);
         }

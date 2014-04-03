@@ -17,11 +17,15 @@
             game.load.spritesheet('sadsprite', 'assets/sadsprite.png', 16, 16);
             game.load.image('ground', 'assets/ground.png');
             game.load.spritesheet('bigblueguy', 'assets/bigblueguy.png', 50, 50);
+            game.load.audio('soundtrack', ['assets/audio/soundtrack.mp3'])
         },
 
         create: function () {
             game.physics.startSystem(Phaser.Physics.ARCADE);
             cursors = game.input.keyboard.createCursorKeys();
+            this.music = game.add.audio('soundtrack');
+            this.music.play('', 0, 1, true);
+
 
             this.background = game.add.sprite(0, 0, 'background');
             this.background.scale.setTo(1.5, 1.5);

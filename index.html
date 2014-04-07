@@ -1,22 +1,25 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <meta charset="utf-8"/>
     <title>Happy smash</title>
 
-    <style>
-        #game-div {
-            width: 1200px;
-            margin: auto;
-            margin-top: 50px;
-        }
-    </style>
-
+    <link href="styles/main.css" rel="stylesheet" type="text/css">
     <script data-main="scripts/main" src="bower_components/requirejs/require.js"></script>
     <script type="text/javascript" src="bower_components/phaser/phaser.min.js"></script>
-    <script type="text/javascript" src="bower_components/underscore/underscore.js"></script>
-
+    <script>
+        requirejs.config({
+            baseUrl: '../../scripts',
+            paths: {
+                underscore: '../bower_components/underscore/underscore',
+            },
+            shim: {
+                "underscore": {
+                    exports: "_"
+                }
+            }
+        });
+    </script>
 </head>
 <body>
 

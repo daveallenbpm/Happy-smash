@@ -1,7 +1,3 @@
-/* Module that loads all the resources.
- *
- * After loading, it delegates to the main game state.
- */
 
 define([], function(){
     var Load = function (game) {
@@ -19,7 +15,7 @@ define([], function(){
             },
 
             create: function () {
-                game.state.start('main');
+                game.state.start('menu');
             }
         };
     };

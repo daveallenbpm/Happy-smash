@@ -1,12 +1,12 @@
-define(['enemy', 'player'], function (Enemy, Player) {
-    var cursors;
+define(['enemy', 'player' ], function (Enemy, Player) {
 
     var Play = function (game) {
         return {
             create: function () {
                 var that = this;
+                that.cursors = game.input.keyboard.createCursorKeys();
                 game.physics.startSystem(Phaser.Physics.ARCADE);
-                cursors = game.input.keyboard.createCursorKeys();
+
                 that.music = game.add.audio('soundtrack');
                 that.music.play('', 0, 0, true);
                 that.hit = game.add.audio('hit');
@@ -41,7 +41,7 @@ define(['enemy', 'player'], function (Enemy, Player) {
                 game.physics.arcade.collide(that.enemy, that.platforms);
                 game.physics.arcade.collide(that.player, that.enemy, that.playerEnemyCallback.bind(that));
                 that.enemy.updateMovement();
-                that.player.updateMovement(cursors);
+                that.player.updateMovement(that.cursors);
             },
 
             playerEnemyCallback: function (player, enemy) {

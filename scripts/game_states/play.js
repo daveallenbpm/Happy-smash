@@ -1,4 +1,4 @@
-define(['enemy', 'player' ], function (Enemy, Player) {
+define(['../sprites/enemy', '../sprites/player' ], function (Enemy, Player) {
 
     var Play = function (game) {
         return {
@@ -8,7 +8,7 @@ define(['enemy', 'player' ], function (Enemy, Player) {
                 game.physics.startSystem(Phaser.Physics.ARCADE);
 
                 that.music = game.add.audio('soundtrack');
-                that.music.play('', 0, 0, true);
+                that.music.play('', 0, 0.5, true);
                 that.hit = game.add.audio('hit');
 
                 that.background = game.add.sprite(0, 0, 'background');

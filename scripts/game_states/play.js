@@ -1,5 +1,9 @@
 define(['../sprites/enemy', '../sprites/player' ], function (Enemy, Player) {
 
+    var wave = 1;
+    var numberOfWaves = 5;
+    var state = 'creating';
+
     var Play = function (game) {
         return {
             create: function () {
@@ -10,6 +14,8 @@ define(['../sprites/enemy', '../sprites/player' ], function (Enemy, Player) {
                 that.music = game.add.audio('soundtrack');
                 that.music.play('', 0, 0.5, true);
                 that.hit = game.add.audio('hit');
+                that.smash = game.add.audio('smash');
+                that.ouch = game.add.audio('ouch');
 
                 that.background = game.add.sprite(0, 0, 'background');
                 that.background.scale.setTo(1.5, 1.5);
@@ -24,7 +30,9 @@ define(['../sprites/enemy', '../sprites/player' ], function (Enemy, Player) {
                 that.score = 0;
                 that.scoreText = game.add.text(16, 16, 'Score: ' + that.score, { fontSize: '32px', fill: '#000', fontFamily: "cursive" });
 
-                that.enemy = Enemy(game);
+                that.enemies = game.add.group();
+                that.enemies.enableBody = true;
+
                 that.player = Player(game);
 
                 that.emitter = game.add.emitter(0, 0, 200);
@@ -38,10 +46,24 @@ define(['../sprites/enemy', '../sprites/player' ], function (Enemy, Player) {
                 var that = this;
                 that.player.body.velocity.x = 0;
                 game.physics.arcade.collide(that.player, that.platforms);
-                game.physics.arcade.collide(that.enemy, that.platforms);
-                game.physics.arcade.collide(that.player, that.enemy, that.playerEnemyCallback.bind(that));
-                that.enemy.updateMovement();
+                game.physics.arcade.collide(that.enemies, that.platforms);
+                game.physics.arcade.collide(that.enemies, that.enemies);
+
+                game.physics.arcade.collide(that.player, that.enemies, that.playerEnemyCallback.bind(that));
+                that.enemies.forEachAlive(function(enemy){
+                    enemy.updateMovement();
+                });
+
                 that.player.updateMovement(that.cursors);
+
+                if (state === 'creating'){
+                    that.loadEnemies(wave);
+                }
+
+                if (that.enemies.countLiving() === 0){
+                    wave += 1;
+                    state = 'creating';
+                }
             },
 
             playerEnemyCallback: function (player, enemy) {
@@ -61,6 +83,17 @@ define(['../sprites/enemy', '../sprites/player' ], function (Enemy, Player) {
                     that.emitter.y = player.y + player.height / 2;
                     that.emitter.start(true, 300, null, 8);
 
+                    if (enemy.body.touching.left){
+                        enemy.body.velocity.x = 100;
+                    }
+                    else if (enemy.body.touching.right){
+                        enemy.body.velocity.x = -100;
+                    }
+
+                    enemy.body.velocity.y = -200;
+
+                    that.ouch.play('', 0, 0.5, false);
+
                     window.setTimeout(function () {
                         player.state = 'normal';
                         player.body.x = player.initialPlayerPosition.x;
@@ -72,12 +105,38 @@ define(['../sprites/enemy', '../sprites/player' ], function (Enemy, Player) {
                     that.emitter.y = enemy.y + enemy.height / 2;
                     that.score += enemy.scoreValue;
 
+                    if (!that.cursors.up.isDown){
+                        player.body.velocity.y = -350;
+                    }
+
                     enemy.kill();
                     that.emitter.start(true, 300, null, 8);
                     that.scoreText.text = "Score: " + that.score;
+
+                    if (that.score % 500 === 0){
+                        that.smash.play('', 0, 1, false);
+                    }
+
+                    that.hit.play('', 0, 0.5, false);
                 }
 
-                that.hit.play('', 0, 0.5, false);
+
+            },
+
+            loadEnemies : function(wave){
+                var that = this;
+                state = 'loaded';
+                for (var i = 0; i < wave; i++){
+                    var gravity = Math.random()*2*300;
+                    var y = game.world.height - (300 + (wave / 2 * 50));
+                    var initialVelocity = 100 + (Math.random() - 0.5)*50;
+                    if (i % 2 === 0){
+                        Enemy.add(game, that.enemies, {x: game.world.width - 0, y: y, initialVelocity: -initialVelocity, gravity: gravity  });
+                    }
+                    else{
+                        Enemy.add(game, that.enemies, {x: 0, y: y, initialVelocity: initialVelocity, gravity : gravity });
+                    }
+                }
             }
         }
     };

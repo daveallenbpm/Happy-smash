@@ -11,7 +11,9 @@ define([], function(){
                 game.load.spritesheet('bigblueguy', 'assets/bigblueguy.png', 50, 50);
 
                 game.load.audio('soundtrack', ['assets/audio/soundtrack.mp3']);
-                game.load.audio('hit', ['assets/audio/soundeffects/hit.wav'])
+                game.load.audio('hit', ['assets/audio/soundeffects/hit.wav']);
+                game.load.audio('smash', ['assets/audio/soundeffects/smash.wav']);
+                game.load.audio('ouch', ['assets/audio/soundeffects/ouch.wav']);
             },
 
             create: function () {

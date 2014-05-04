@@ -9,7 +9,7 @@ define([], function(){
 
         // Enable physics for the player
         game.physics.arcade.enable(player);
-        player.body.gravity.y = 600;
+        player.body.gravity.y = 1000;
         player.body.collideWorldBounds = true;
         player.animations.add('right', [1, 2, 3, 4], 6, false);
         player.animations.add('left', [5, 6, 7, 8], 6, false);
@@ -49,7 +49,7 @@ define([], function(){
 
         //  Allow the player to jump if they are touching the ground.
         if (cursors.up.isDown && player.body.touching.down) {
-            player.body.velocity.y = -500;
+            player.body.velocity.y = -650;
         }
     }
 });

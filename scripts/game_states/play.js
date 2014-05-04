@@ -1,4 +1,4 @@
-define(['../sprites/enemy', '../sprites/player' ], function (Enemy, Player) {
+define(['../sprites/enemy', '../sprites/player', '../sprites/boss' ], function (Enemy, Player, Boss) {
 
     var wave = 1;
     var numberOfWaves = 5;
@@ -56,8 +56,12 @@ define(['../sprites/enemy', '../sprites/player' ], function (Enemy, Player) {
 
                 that.player.updateMovement(that.cursors);
 
-                if (state === 'creating'){
+                if (state === 'creating' && wave <= numberOfWaves){
                     that.loadEnemies(wave);
+                }
+
+                if (state === 'creating' && wave > numberOfWaves){
+                    that.loadBoss();
                 }
 
                 if (that.enemies.countLiving() === 0){
@@ -119,13 +123,10 @@ define(['../sprites/enemy', '../sprites/player' ], function (Enemy, Player) {
 
                     that.hit.play('', 0, 0.5, false);
                 }
-
-
             },
 
             loadEnemies : function(wave){
                 var that = this;
-                state = 'loaded';
                 for (var i = 0; i < wave; i++){
                     var gravity = Math.random()*2*300;
                     var y = game.world.height - (300 + (wave / 2 * 50));
@@ -137,6 +138,15 @@ define(['../sprites/enemy', '../sprites/player' ], function (Enemy, Player) {
                         Enemy.add(game, that.enemies, {x: 0, y: y, initialVelocity: initialVelocity, gravity : gravity });
                     }
                 }
+
+                state = 'loaded';
+            },
+
+            loadBoss : function() {
+                var that = this;
+                Boss.add(game, that.enemies);
+
+                state = 'loaded';
             }
         }
     };
